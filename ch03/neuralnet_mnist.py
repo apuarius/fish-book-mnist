@@ -46,15 +46,27 @@ if __name__ == '__main__':
     x, t = get_data() #x代表图片 t代表标签
     network = init_network()
 
+    batch_size = 100 #批处理
     accuracy_cnt = 0
     total_count = len(x)
 
     print("推理中")
-    for i in range(total_count):
-         y = predict(network, x[i]) #y是一个包含10个概率的数组
-         p = np.argmax(y) #获取概率最大的那个索引
-         if p == t[i]: #如果预测结果的索引等于正确答案的索引
-             accuracy_cnt += 1
+    for i in range(0,total_count,batch_size):     #以100为步长生成序列
+        x_batch = x[i:i + batch_size]               #从 x 中取出第 i 到 i+100 之间的数据
+
+        # y_batch 的形状通常是 (100, 10)，表示100张图片，每张图片有10个类别的概率分数
+        # 将这100张图片一次性放入网络
+        y_batch = predict(network, x_batch)
+
+        # axis=1 表示在第1维度（行方向/类别方向）上寻找最大值的索引
+        # 结果 p 是一个包含100个数字的数组，代表这100张图片预测的数字
+        p = np.argmax(y_batch,axis = 1)
+
+        # 1. 生成 True/False 的对比数组
+        match_array = (p == t[i:i + batch_size])
+
+        # 2. 统计这个数组里有多少个 True，并加到总分里
+        accuracy_cnt += np.sum(match_array)
 
     print("Accuracy:"+str(float(accuracy_cnt)/total_count))
 
