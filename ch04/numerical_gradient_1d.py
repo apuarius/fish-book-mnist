@@ -1,6 +1,10 @@
 import numpy as np
-#一维数组求梯度
+#适用一维数组求梯度
 def numerical_gradient_1d(f, x):
+    """
+       f:目标函数(Loss函数)
+       x:参数(只能是一维数组)
+       """
     #准备工作
     h = 1e-4    #步长
     grad = np.zeros_like(x) #初始化数组用来存储梯度数据
