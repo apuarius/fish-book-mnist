@@ -1,5 +1,5 @@
 import numpy as np
-#通用方法求梯度
+#通数值微分求梯度
 
 def numerical_gradient(f, x):
     """
